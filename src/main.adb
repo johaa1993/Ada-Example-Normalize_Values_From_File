@@ -25,10 +25,7 @@ procedure Main is
       Close (F);
    end;
 
-   function Normalize (Value : Float; Min, Max : Float) return Float is
-   begin
-      return (Value - Min) / (Max - Min);
-   end;
+   function Normalize (Value : Float; Min, Max : Float) return Float is ((Value - Min) / (Max - Min));
 
    procedure Normalize (Min : Float; Max : Float; Scale : Float; Result : in out Float_Array) is
    begin
@@ -59,7 +56,7 @@ procedure Main is
 
    procedure Read (Item : out Feature_Array; Last : in out Integer) with
      Pre => Feature_Array'Component_Size = Float_Array'Component_Size,
-     Post => (for all E of Item (Item'First .. Last) => E >= 0.0 and E <= 1.0);
+     Post => (for all E of Item (Item'First .. Last) => E'Valid);
 
    procedure Read (Item : out Feature_Array; Last : in out Integer) is
       Data : Float_Array (Item'Range) with Address => Item'Address;
@@ -69,6 +66,7 @@ procedure Main is
       Read ("f.ssv", Data, Last, Min, Max);
       Ada.Text_IO.Put_Line ("Before normalization.");
       Put (Data (Data'First .. Last));
+      --Normalize (Min, Max, 2.0, Data (Data'First .. Last));
       Normalize (Min, Max, 1.0, Data (Data'First .. Last));
    end;
 
